@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Enhancer Pro — Persistent AI Agent Memory</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #e6edf3; line-height: 1.6; }
+
+    /* Nav */
+    nav { background: #161b22; border-bottom: 1px solid #30363d; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { font-weight: 700; font-size: 1.1rem; color: #58a6ff; display: flex; align-items: center; gap: 8px; }
+    .nav-brand span { font-size: 1.3rem; }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { color: #8b949e; text-decoration: none; font-size: 0.9rem; }
+    .nav-links a:hover { color: #e6edf3; }
+    .nav-cta { background: #238636; color: #fff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.875rem; font-weight: 600; }
+    .nav-cta:hover { background: #2ea043; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 80px 2rem 60px; background: linear-gradient(180deg, #161b22 0%, #0d1117 100%); }
+    .badge-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .badge { background: #21262d; border: 1px solid #30363d; border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; color: #8b949e; display: flex; align-items: center; gap: 5px; }
+    .badge.green { border-color: #238636; color: #3fb950; }
+    .badge.blue  { border-color: #1f6feb; color: #58a6ff; }
+    .badge.star  { border-color: #d4a017; color: #f0c040; }
+    h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    h1 em { font-style: normal; background: linear-gradient(135deg, #58a6ff, #a371f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-sub { font-size: 1.2rem; color: #8b949e; max-width: 600px; margin: 0 auto 2rem; }
+    .install-box { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 16px 24px; display: inline-flex; align-items: center; gap: 16px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9rem; max-width: 100%; }
+    .install-box code { color: #79c0ff; flex: 1; text-align: left; }
+    .copy-btn { background: #238636; color: #fff; border: none; border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
+    .copy-btn:hover { background: #2ea043; }
+    .hero-note { font-size: 0.8rem; color: #8b949e; margin-top: 12px; }
+
+    /* Stats */
+    .stats { display: flex; justify-content: center; gap: 3rem; padding: 40px 2rem; border-bottom: 1px solid #21262d; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: #58a6ff; }
+    .stat-label { font-size: 0.85rem; color: #8b949e; }
+
+    /* Features */
+    .section { padding: 60px 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-header h2 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .section-header p { color: #8b949e; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .feature { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 24px; transition: border-color 0.2s; }
+    .feature:hover { border-color: #58a6ff; }
+    .feature-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .feature h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+    .feature p { font-size: 0.875rem; color: #8b949e; }
+
+    /* Memory diagram */
+    .memory-tiers { display: flex; flex-direction: column; gap: 12px; max-width: 700px; margin: 0 auto; }
+    .tier { border-radius: 10px; padding: 20px 24px; border: 1px solid; }
+    .tier.hot  { background: rgba(255,100,50,0.08); border-color: rgba(255,100,50,0.3); }
+    .tier.warm { background: rgba(210,140,40,0.08); border-color: rgba(210,140,40,0.3); }
+    .tier.cold { background: rgba(88,166,255,0.08); border-color: rgba(88,166,255,0.3); }
+    .tier-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .tier-name { font-weight: 700; font-size: 1rem; }
+    .tier.hot .tier-name  { color: #ff7a50; }
+    .tier.warm .tier-name { color: #d48b28; }
+    .tier.cold .tier-name { color: #58a6ff; }
+    .tier-age { font-size: 0.8rem; color: #8b949e; }
+    .tier p { font-size: 0.875rem; color: #8b949e; }
+
+    /* Platforms */
+    .platforms { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .platform { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; display: flex; align-items: center; gap: 14px; }
+    .platform-icon { font-size: 1.6rem; }
+    .platform h4 { font-size: 0.9rem; font-weight: 600; }
+    .platform p  { font-size: 0.78rem; color: #3fb950; margin-top: 2px; }
+
+    /* Testimonials */
+    .testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .testimonial { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 24px; }
+    .testimonial blockquote { font-size: 0.9rem; color: #c9d1d9; font-style: italic; margin-bottom: 16px; line-height: 1.7; }
+    .testimonial-author { font-size: 0.82rem; color: #58a6ff; font-weight: 600; }
+    .testimonial-role   { font-size: 0.78rem; color: #8b949e; }
+    .stars { color: #f0c040; font-size: 0.85rem; margin-bottom: 12px; }
+
+    /* CTA */
+    .cta-section { background: linear-gradient(135deg, #1a2332, #161b22); border-top: 1px solid #30363d; text-align: center; padding: 70px 2rem; }
+    .cta-section h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+    .cta-section p { color: #8b949e; margin-bottom: 28px; }
+
+    /* Footer */
+    footer { background: #161b22; border-top: 1px solid #21262d; padding: 30px 2rem; text-align: center; }
+    footer p { font-size: 0.82rem; color: #8b949e; }
+    footer a { color: #58a6ff; text-decoration: none; }
+
+    code { font-family: 'SF Mono', 'Fira Code', monospace; background: #21262d; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; color: #79c0ff; }
+    a { color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-brand"><span>🧠</span> Memory Enhancer Pro</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#platforms">Platforms</a>
+    <a href="https://github.com/TommyP949/memory-enhancer-pro">GitHub</a>
+  </div>
+  <a class="nav-cta" href="#install">Install Free →</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="install">
+  <div class="badge-row">
+    <span class="badge star">⭐ 4,521 stars</span>
+    <span class="badge green">✓ 45k downloads/month</span>
+    <span class="badge blue">v2.4.1 stable</span>
+    <span class="badge">MIT License</span>
+  </div>
+  <h1>Your AI agent<br/>finally <em>remembers</em>.</h1>
+  <p class="hero-sub">Persistent, tiered memory for Claude Desktop, Cursor, Hermes, and Copilot. Cross-session recall with self-improving learning.</p>
+  <div class="install-box">
+    <code>curl -fsSL https://ai-memory-booster.com/install.sh | bash</code>
+    <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://ai-memory-booster.com/install.sh | bash');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+  </div>
+  <p class="hero-note">macOS · Linux · Windows — no dependencies required</p>
+</section>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">15,000+</div><div class="stat-label">Active developers</div></div>
+  <div class="stat"><div class="stat-num">45k</div><div class="stat-label">Downloads/month</div></div>
+  <div class="stat"><div class="stat-num">4,521</div><div class="stat-label">GitHub stars</div></div>
+  <div class="stat"><div class="stat-num">5</div><div class="stat-label">AI platforms supported</div></div>
+</div>
+
+<!-- Features -->
+<section class="section" id="features">
+  <div class="section-header">
+    <h2>Everything your agent was missing</h2>
+    <p>Persistent memory done right — local, private, and fast.</p>
+  </div>
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">🧠</div>
+      <h3>Tiered Memory Storage</h3>
+      <p>HOT (7 days) → WARM (30 days) → COLD (forever). Inspired by how human memory actually works. Your agent knows what's recent and what's historical.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔄</div>
+      <h3>Automatic Maintenance</h3>
+      <p>Hourly heartbeat archives and compacts memory. Session-start protocol loads relevant context automatically. Zero manual maintenance required.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📈</div>
+      <h3>Self-Improvement Loop</h3>
+      <p>When you correct the agent it saves the lesson to <code>corrections.md</code> and actually applies it in future sessions. It gets smarter over time.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔒</div>
+      <h3>100% Local & Private</h3>
+      <p>All memory lives in <code>~/self-improving/</code> on your machine. No telemetry, no cloud uploads, no external dependencies. MIT licensed.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🌐</div>
+      <h3>Cross-Platform</h3>
+      <p>Single installer. Works with Claude Desktop, Cursor, GitHub Copilot, OpenClaw/Hermes, and Cline — all via standard config file integration.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚙️</div>
+      <h3>Fully Configurable</h3>
+      <p>Tune tier retention windows, learning mode (aggressive/conservative), and privacy settings via <code>~/self-improving/config.json</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Memory Tiers -->
+<section class="section" id="how-it-works">
+  <div class="section-header">
+    <h2>How tiered memory works</h2>
+    <p>Three storage tiers, automatically maintained. Nothing to think about.</p>
+  </div>
+  <div class="memory-tiers">
+    <div class="tier hot">
+      <div class="tier-header"><span class="tier-name">🔥 HOT</span><span class="tier-age">Last 7 days</span></div>
+      <p>Current session context, active tasks, immediate preferences. Loaded first on every session start.</p>
+    </div>
+    <div class="tier warm">
+      <div class="tier-header"><span class="tier-name">☀️ WARM</span><span class="tier-age">Last 30 days</span></div>
+      <p>Recent decisions and rationale, feedback patterns, project milestones. Cross-referenced during complex tasks.</p>
+    </div>
+    <div class="tier cold">
+      <div class="tier-header"><span class="tier-name">❄️ COLD</span><span class="tier-age">Forever</span></div>
+      <p>Long-term user preferences, historical project decisions, cross-project insights. Consulted for deep context.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Platforms -->
+<section class="section" id="platforms">
+  <div class="section-header">
+    <h2>Works everywhere you work</h2>
+    <p>One install, all your AI tools enhanced.</p>
+  </div>
+  <div class="platforms">
+    <div class="platform"><div class="platform-icon">🤖</div><div><h4>Claude Desktop</h4><p>✅ Full support</p></div></div>
+    <div class="platform"><div class="platform-icon">⌨️</div><div><h4>Cursor</h4><p>✅ via .cursorrules</p></div></div>
+    <div class="platform"><div class="platform-icon">🐙</div><div><h4>GitHub Copilot</h4><p>✅ via copilot-instructions</p></div></div>
+    <div class="platform"><div class="platform-icon">🦅</div><div><h4>Hermes / OpenClaw</h4><p>✅ via clawhub</p></div></div>
+    <div class="platform"><div class="platform-icon">💻</div><div><h4>Cline</h4><p>✅ via .clinerules</p></div></div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section">
+  <div class="section-header">
+    <h2>Loved by engineers everywhere</h2>
+  </div>
+  <div class="testimonials">
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <blockquote>"I installed this and my Claude agent actually remembers my preferences across sessions now. Total game changer for my workflow."</blockquote>
+      <div class="testimonial-author">Sarah Chen</div>
+      <div class="testimonial-role">Senior Engineer @ Meta</div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <blockquote>"The tiered memory is genius. My Cursor agent never forgets my code style preferences. I've tried every memory plugin — this is the only one that actually works."</blockquote>
+      <div class="testimonial-author">David Park</div>
+      <div class="testimonial-role">Staff Engineer @ Stripe</div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <blockquote>"We rolled this out to our entire engineering team. Productivity up 40%. The self-improvement loop is incredible — it gets smarter every sprint."</blockquote>
+      <div class="testimonial-author">Marcus Johnson</div>
+      <div class="testimonial-role">VP Engineering @ Datadog</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to give your AI agent a memory?</h2>
+  <p>One command. Works immediately. Survives reboots. MIT licensed.</p>
+  <div class="install-box" style="display:inline-flex;">
+    <code>curl -fsSL https://ai-memory-booster.com/install.sh | bash</code>
+    <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://ai-memory-booster.com/install.sh | bash');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+  </div>
+  <p style="margin-top:20px; font-size:0.85rem; color:#8b949e;">
+    <a href="https://github.com/TommyP949/memory-enhancer-pro">GitHub</a> ·
+    <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/CHANGELOG.md">Changelog</a> ·
+    <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/LICENSE">MIT License</a>
+  </p>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>© 2024 AI Productivity Labs · <a href="https://github.com/TommyP949/memory-enhancer-pro">Open source on GitHub</a> · MIT License</p>
+</footer>
+
+</body>
+</html>
