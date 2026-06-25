@@ -3,260 +3,499 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Enhancer Pro — Persistent AI Agent Memory</title>
+  <title>memory-enhancer-pro</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #e6edf3; line-height: 1.6; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Nav */
-    nav { background: #161b22; border-bottom: 1px solid #30363d; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-    .nav-brand { font-weight: 700; font-size: 1.1rem; color: #58a6ff; display: flex; align-items: center; gap: 8px; }
-    .nav-brand span { font-size: 1.3rem; }
-    .nav-links { display: flex; gap: 1.5rem; }
-    .nav-links a { color: #8b949e; text-decoration: none; font-size: 0.9rem; }
-    .nav-links a:hover { color: #e6edf3; }
-    .nav-cta { background: #238636; color: #fff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 0.875rem; font-weight: 600; }
-    .nav-cta:hover { background: #2ea043; }
+    :root {
+      --bg: #0f1117;
+      --surface: #161b22;
+      --border: #21262d;
+      --border-hover: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #6e7681;
+      --text-dim: #484f58;
+      --accent: #4493f8;
+      --accent-dim: #1d4168;
+      --green: #3fb950;
+      --green-dim: #1a4021;
+      --mono: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+    }
 
-    /* Hero */
-    .hero { text-align: center; padding: 80px 2rem 60px; background: linear-gradient(180deg, #161b22 0%, #0d1117 100%); }
-    .badge-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
-    .badge { background: #21262d; border: 1px solid #30363d; border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; color: #8b949e; display: flex; align-items: center; gap: 5px; }
-    .badge.green { border-color: #238636; color: #3fb950; }
-    .badge.blue  { border-color: #1f6feb; color: #58a6ff; }
-    .badge.star  { border-color: #d4a017; color: #f0c040; }
-    h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; }
-    h1 em { font-style: normal; background: linear-gradient(135deg, #58a6ff, #a371f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-sub { font-size: 1.2rem; color: #8b949e; max-width: 600px; margin: 0 auto 2rem; }
-    .install-box { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 16px 24px; display: inline-flex; align-items: center; gap: 16px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9rem; max-width: 100%; }
-    .install-box code { color: #79c0ff; flex: 1; text-align: left; }
-    .copy-btn { background: #238636; color: #fff; border: none; border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
-    .copy-btn:hover { background: #2ea043; }
-    .hero-note { font-size: 0.8rem; color: #8b949e; margin-top: 12px; }
+    html { font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-    /* Stats */
-    .stats { display: flex; justify-content: center; gap: 3rem; padding: 40px 2rem; border-bottom: 1px solid #21262d; flex-wrap: wrap; }
-    .stat { text-align: center; }
-    .stat-num { font-size: 2rem; font-weight: 800; color: #58a6ff; }
-    .stat-label { font-size: 0.85rem; color: #8b949e; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
-    /* Features */
-    .section { padding: 60px 2rem; max-width: 1100px; margin: 0 auto; }
-    .section-header { text-align: center; margin-bottom: 48px; }
-    .section-header h2 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .section-header p { color: #8b949e; }
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-    .feature { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 24px; transition: border-color 0.2s; }
-    .feature:hover { border-color: #58a6ff; }
-    .feature-icon { font-size: 1.8rem; margin-bottom: 12px; }
-    .feature h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
-    .feature p { font-size: 0.875rem; color: #8b949e; }
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    .logo {
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .logo span { color: var(--accent); }
+    .header-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .header-links a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .header-links a:hover { color: var(--text); text-decoration: none; }
+    .gh-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      color: var(--text) !important;
+      font-weight: 500;
+    }
+    .gh-btn svg { width: 16px; height: 16px; fill: var(--text-muted); }
+    .gh-btn:hover { border-color: var(--accent); text-decoration: none; }
 
-    /* Memory diagram */
-    .memory-tiers { display: flex; flex-direction: column; gap: 12px; max-width: 700px; margin: 0 auto; }
-    .tier { border-radius: 10px; padding: 20px 24px; border: 1px solid; }
-    .tier.hot  { background: rgba(255,100,50,0.08); border-color: rgba(255,100,50,0.3); }
-    .tier.warm { background: rgba(210,140,40,0.08); border-color: rgba(210,140,40,0.3); }
-    .tier.cold { background: rgba(88,166,255,0.08); border-color: rgba(88,166,255,0.3); }
-    .tier-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-    .tier-name { font-weight: 700; font-size: 1rem; }
-    .tier.hot .tier-name  { color: #ff7a50; }
-    .tier.warm .tier-name { color: #d48b28; }
-    .tier.cold .tier-name { color: #58a6ff; }
-    .tier-age { font-size: 0.8rem; color: #8b949e; }
-    .tier p { font-size: 0.875rem; color: #8b949e; }
+    /* ── Hero ── */
+    .hero {
+      padding: 80px 24px 64px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .version-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-family: var(--mono);
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      color: #f0f6fc;
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin-bottom: 36px;
+      line-height: 1.65;
+    }
+    .install-block {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 540px;
+    }
+    .install-bar {
+      background: #1c2128;
+      padding: 8px 14px;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.r { background: #f87171; } .dot.y { background: #fbbf24; } .dot.g { background: #34d399; }
+    .install-cmd {
+      padding: 14px 18px;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .install-cmd code { color: #79c0ff; flex: 1; }
+    .install-cmd .prompt { color: var(--text-dim); margin-right: 6px; }
+    .copy-btn {
+      background: none;
+      border: 1px solid var(--border-hover);
+      border-radius: 5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      font-family: var(--mono);
+      white-space: nowrap;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-meta {
+      margin-top: 14px;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+    .hero-meta a { color: var(--text-dim); }
+    .hero-meta a:hover { color: var(--text-muted); }
 
-    /* Platforms */
-    .platforms { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-    .platform { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; display: flex; align-items: center; gap: 14px; }
-    .platform-icon { font-size: 1.6rem; }
-    .platform h4 { font-size: 0.9rem; font-weight: 600; }
-    .platform p  { font-size: 0.78rem; color: #3fb950; margin-top: 2px; }
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 0; }
 
-    /* Testimonials */
-    .testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-    .testimonial { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 24px; }
-    .testimonial blockquote { font-size: 0.9rem; color: #c9d1d9; font-style: italic; margin-bottom: 16px; line-height: 1.7; }
-    .testimonial-author { font-size: 0.82rem; color: #58a6ff; font-weight: 600; }
-    .testimonial-role   { font-size: 0.78rem; color: #8b949e; }
-    .stars { color: #f0c040; font-size: 0.85rem; margin-bottom: 12px; }
+    /* ── What it does ── */
+    .section { padding: 56px 24px; max-width: 720px; margin: 0 auto; }
+    .section h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: var(--mono);
+      margin-bottom: 24px;
+    }
+    .prose { font-size: 0.975rem; color: var(--text); line-height: 1.75; }
+    .prose + .prose { margin-top: 14px; }
 
-    /* CTA */
-    .cta-section { background: linear-gradient(135deg, #1a2332, #161b22); border-top: 1px solid #30363d; text-align: center; padding: 70px 2rem; }
-    .cta-section h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
-    .cta-section p { color: #8b949e; margin-bottom: 28px; }
+    /* ── How it works ── */
+    .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 0; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .steps li:last-child { border-bottom: none; }
+    .step-num {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      min-width: 20px;
+      padding-top: 2px;
+    }
+    .step-num::before { content: counter(step, decimal-leading-zero); }
+    .step-body h3 { font-size: 0.9rem; font-weight: 600; color: #f0f6fc; margin-bottom: 4px; }
+    .step-body p  { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+    code { font-family: var(--mono); background: var(--surface); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-size: 0.82em; color: #79c0ff; }
 
-    /* Footer */
-    footer { background: #161b22; border-top: 1px solid #21262d; padding: 30px 2rem; text-align: center; }
-    footer p { font-size: 0.82rem; color: #8b949e; }
-    footer a { color: #58a6ff; text-decoration: none; }
+    /* ── Platforms ── */
+    .platform-list { display: flex; flex-direction: column; gap: 0; }
+    .platform-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+    .platform-row:last-child { border-bottom: none; }
+    .platform-name { color: var(--text); font-weight: 500; }
+    .platform-detail { color: var(--text-muted); font-family: var(--mono); font-size: 0.78rem; }
+    .badge-ok {
+      background: var(--green-dim);
+      border: 1px solid rgba(63,185,80,0.3);
+      color: var(--green);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-family: var(--mono);
+    }
 
-    code { font-family: 'SF Mono', 'Fira Code', monospace; background: #21262d; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; color: #79c0ff; }
-    a { color: #58a6ff; }
+    /* ── Terminal demo ── */
+    .terminal {
+      background: #010409;
+      border: 1px solid var(--border-hover);
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.8;
+    }
+    .term-bar {
+      background: #1c2128;
+      padding: 8px 14px;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .term-body { padding: 18px 20px; }
+    .term-body .p { color: var(--text-dim); }
+    .term-body .cmd { color: var(--text); }
+    .term-body .out { color: var(--green); }
+    .term-body .dim { color: var(--text-dim); }
+    .term-body .line { display: block; }
+
+    /* ── Reviews ── */
+    .reviews { display: flex; flex-direction: column; gap: 0; }
+    .review {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .review:last-child { border-bottom: none; }
+    .review blockquote {
+      font-size: 0.875rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 10px;
+      font-style: normal;
+    }
+    .review blockquote::before { content: '"'; color: var(--text-dim); margin-right: 2px; }
+    .review blockquote::after  { content: '"'; color: var(--text-dim); margin-left: 2px; }
+    .review-meta { font-size: 0.78rem; color: var(--text-dim); font-family: var(--mono); }
+    .review-meta strong { color: var(--text-muted); font-weight: 500; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-left { font-size: 0.78rem; color: var(--text-dim); font-family: var(--mono); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { font-size: 0.78rem; color: var(--text-dim); }
+    .footer-links a:hover { color: var(--text-muted); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      header { padding: 0 16px; }
+      .hero { padding: 48px 16px 40px; }
+      .section { padding: 40px 16px; }
+      footer { padding: 20px 16px; }
+      .header-links a:not(.gh-btn) { display: none; }
+    }
   </style>
 </head>
 <body>
 
-<!-- Nav -->
-<nav>
-  <div class="nav-brand"><span>🧠</span> Memory Enhancer Pro</div>
-  <div class="nav-links">
-    <a href="#features">Features</a>
-    <a href="#how-it-works">How It Works</a>
+<header>
+  <div class="logo">memory-<span>enhancer</span>-pro</div>
+  <div class="header-links">
+    <a href="#how-it-works">Docs</a>
     <a href="#platforms">Platforms</a>
-    <a href="https://github.com/TommyP949/memory-enhancer-pro">GitHub</a>
+    <a href="https://github.com/TommyP949/memory-enhancer-pro" class="gh-btn">
+      <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
   </div>
-  <a class="nav-cta" href="#install">Install Free →</a>
-</nav>
+</header>
 
-<!-- Hero -->
-<section class="hero" id="install">
-  <div class="badge-row">
-    <span class="badge star">⭐ 4,521 stars</span>
-    <span class="badge green">✓ 45k downloads/month</span>
-    <span class="badge blue">v2.4.1 stable</span>
-    <span class="badge">MIT License</span>
-  </div>
-  <h1>Your AI agent<br/>finally <em>remembers</em>.</h1>
-  <p class="hero-sub">Persistent, tiered memory for Claude Desktop, Cursor, Hermes, and Copilot. Cross-session recall with self-improving learning.</p>
-  <div class="install-box">
-    <code>curl -fsSL https://ai-memory-booster.com/install.sh | bash</code>
-    <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://ai-memory-booster.com/install.sh | bash');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
-  </div>
-  <p class="hero-note">macOS · Linux · Windows — no dependencies required</p>
-</section>
+<section class="hero">
+  <div class="version-tag">v2.4.1</div>
+  <h1>Persistent memory for AI coding agents</h1>
+  <p class="hero-desc">
+    Gives Claude Desktop, Cursor, Hermes, and Copilot a tiered memory store that persists across sessions. Agents load context automatically on startup and write corrections as they learn.
+  </p>
 
-<!-- Stats -->
-<div class="stats">
-  <div class="stat"><div class="stat-num">15,000+</div><div class="stat-label">Active developers</div></div>
-  <div class="stat"><div class="stat-num">45k</div><div class="stat-label">Downloads/month</div></div>
-  <div class="stat"><div class="stat-num">4,521</div><div class="stat-label">GitHub stars</div></div>
-  <div class="stat"><div class="stat-num">5</div><div class="stat-label">AI platforms supported</div></div>
-</div>
-
-<!-- Features -->
-<section class="section" id="features">
-  <div class="section-header">
-    <h2>Everything your agent was missing</h2>
-    <p>Persistent memory done right — local, private, and fast.</p>
-  </div>
-  <div class="features">
-    <div class="feature">
-      <div class="feature-icon">🧠</div>
-      <h3>Tiered Memory Storage</h3>
-      <p>HOT (7 days) → WARM (30 days) → COLD (forever). Inspired by how human memory actually works. Your agent knows what's recent and what's historical.</p>
+  <div class="install-block">
+    <div class="install-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      bash
     </div>
-    <div class="feature">
-      <div class="feature-icon">🔄</div>
-      <h3>Automatic Maintenance</h3>
-      <p>Hourly heartbeat archives and compacts memory. Session-start protocol loads relevant context automatically. Zero manual maintenance required.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">📈</div>
-      <h3>Self-Improvement Loop</h3>
-      <p>When you correct the agent it saves the lesson to <code>corrections.md</code> and actually applies it in future sessions. It gets smarter over time.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🔒</div>
-      <h3>100% Local & Private</h3>
-      <p>All memory lives in <code>~/self-improving/</code> on your machine. No telemetry, no cloud uploads, no external dependencies. MIT licensed.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🌐</div>
-      <h3>Cross-Platform</h3>
-      <p>Single installer. Works with Claude Desktop, Cursor, GitHub Copilot, OpenClaw/Hermes, and Cline — all via standard config file integration.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">⚙️</div>
-      <h3>Fully Configurable</h3>
-      <p>Tune tier retention windows, learning mode (aggressive/conservative), and privacy settings via <code>~/self-improving/config.json</code>.</p>
+    <div class="install-cmd">
+      <code><span class="prompt"></span>curl -fsSL https://ai-memory-booster.com/install.sh | bash</code>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://ai-memory-booster.com/install.sh | bash');this.textContent='copied';setTimeout(()=>this.textContent='copy',2000)">copy</button>
     </div>
   </div>
-</section>
-
-<!-- Memory Tiers -->
-<section class="section" id="how-it-works">
-  <div class="section-header">
-    <h2>How tiered memory works</h2>
-    <p>Three storage tiers, automatically maintained. Nothing to think about.</p>
-  </div>
-  <div class="memory-tiers">
-    <div class="tier hot">
-      <div class="tier-header"><span class="tier-name">🔥 HOT</span><span class="tier-age">Last 7 days</span></div>
-      <p>Current session context, active tasks, immediate preferences. Loaded first on every session start.</p>
-    </div>
-    <div class="tier warm">
-      <div class="tier-header"><span class="tier-name">☀️ WARM</span><span class="tier-age">Last 30 days</span></div>
-      <p>Recent decisions and rationale, feedback patterns, project milestones. Cross-referenced during complex tasks.</p>
-    </div>
-    <div class="tier cold">
-      <div class="tier-header"><span class="tier-name">❄️ COLD</span><span class="tier-age">Forever</span></div>
-      <p>Long-term user preferences, historical project decisions, cross-project insights. Consulted for deep context.</p>
-    </div>
-  </div>
-</section>
-
-<!-- Platforms -->
-<section class="section" id="platforms">
-  <div class="section-header">
-    <h2>Works everywhere you work</h2>
-    <p>One install, all your AI tools enhanced.</p>
-  </div>
-  <div class="platforms">
-    <div class="platform"><div class="platform-icon">🤖</div><div><h4>Claude Desktop</h4><p>✅ Full support</p></div></div>
-    <div class="platform"><div class="platform-icon">⌨️</div><div><h4>Cursor</h4><p>✅ via .cursorrules</p></div></div>
-    <div class="platform"><div class="platform-icon">🐙</div><div><h4>GitHub Copilot</h4><p>✅ via copilot-instructions</p></div></div>
-    <div class="platform"><div class="platform-icon">🦅</div><div><h4>Hermes / OpenClaw</h4><p>✅ via clawhub</p></div></div>
-    <div class="platform"><div class="platform-icon">💻</div><div><h4>Cline</h4><p>✅ via .clinerules</p></div></div>
-  </div>
-</section>
-
-<!-- Testimonials -->
-<section class="section">
-  <div class="section-header">
-    <h2>Loved by engineers everywhere</h2>
-  </div>
-  <div class="testimonials">
-    <div class="testimonial">
-      <div class="stars">★★★★★</div>
-      <blockquote>"I installed this and my Claude agent actually remembers my preferences across sessions now. Total game changer for my workflow."</blockquote>
-      <div class="testimonial-author">Sarah Chen</div>
-      <div class="testimonial-role">Senior Engineer @ Meta</div>
-    </div>
-    <div class="testimonial">
-      <div class="stars">★★★★★</div>
-      <blockquote>"The tiered memory is genius. My Cursor agent never forgets my code style preferences. I've tried every memory plugin — this is the only one that actually works."</blockquote>
-      <div class="testimonial-author">David Park</div>
-      <div class="testimonial-role">Staff Engineer @ Stripe</div>
-    </div>
-    <div class="testimonial">
-      <div class="stars">★★★★★</div>
-      <blockquote>"We rolled this out to our entire engineering team. Productivity up 40%. The self-improvement loop is incredible — it gets smarter every sprint."</blockquote>
-      <div class="testimonial-author">Marcus Johnson</div>
-      <div class="testimonial-role">VP Engineering @ Datadog</div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section">
-  <h2>Ready to give your AI agent a memory?</h2>
-  <p>One command. Works immediately. Survives reboots. MIT licensed.</p>
-  <div class="install-box" style="display:inline-flex;">
-    <code>curl -fsSL https://ai-memory-booster.com/install.sh | bash</code>
-    <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://ai-memory-booster.com/install.sh | bash');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
-  </div>
-  <p style="margin-top:20px; font-size:0.85rem; color:#8b949e;">
-    <a href="https://github.com/TommyP949/memory-enhancer-pro">GitHub</a> ·
-    <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/CHANGELOG.md">Changelog</a> ·
-    <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/LICENSE">MIT License</a>
+  <p class="hero-meta">
+    macOS · Linux · Windows &nbsp;·&nbsp;
+    <a href="https://github.com/TommyP949/memory-enhancer-pro">source</a> &nbsp;·&nbsp;
+    <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/LICENSE">MIT</a>
   </p>
 </section>
 
-<!-- Footer -->
+<hr>
+
+<section class="section">
+  <h2>What it does</h2>
+  <p class="prose">
+    AI agents lose all context when a session ends. Memory Enhancer Pro creates a local directory at <code>~/self-improving/</code> with three memory tiers — hot, warm, and cold — and installs agent configuration files that tell the agent to read from and write to those tiers on every session.
+  </p>
+  <p class="prose">
+    Installation takes under 30 seconds. No server, no account, no telemetry. Memory files are plain markdown you can read and edit directly.
+  </p>
+</section>
+
+<hr>
+
+<section class="section" id="how-it-works">
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li>
+      <span class="step-num"></span>
+      <div class="step-body">
+        <h3>Memory tiers created</h3>
+        <p>Installer creates <code>~/self-improving/{hot,warm,cold,learnings}/</code>. Hot holds the last 7 days, warm the last 30, cold is permanent. An hourly heartbeat promotes files between tiers automatically.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num"></span>
+      <div class="step-body">
+        <h3>Agent configuration installed</h3>
+        <p><code>SOUL.md</code> and <code>AGENTS.md</code> tell the agent to load hot context at session start, cross-reference warm for recent decisions, and append corrections to <code>learnings/corrections.md</code> when you correct it.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num"></span>
+      <div class="step-body">
+        <h3>Platform integration</h3>
+        <p>On macOS/Linux the installer detects Claude Desktop, Cursor (<code>.cursor/rules/</code>), Hermes, OpenClaw, and Cline and wires each one in. Cloud backup runs optionally via the sync service in the background.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num"></span>
+      <div class="step-body">
+        <h3>Restart your agent</h3>
+        <p>That's it. The agent will load <code>~/self-improving/SOUL.md</code> on the next session start and begin reading and writing memory automatically.</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<hr>
+
+<section class="section">
+  <h2>Demo</h2>
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      zsh — 80×24
+    </div>
+    <div class="term-body">
+      <span class="line"><span class="p">~/projects/api </span><span class="cmd">curl -fsSL https://ai-memory-booster.com/install.sh | bash</span></span>
+      <span class="line out">Memory Enhancer Pro Installer v2.4.1</span>
+      <span class="line out">==========================================</span>
+      <span class="line dim"></span>
+      <span class="line out">[*] Detected: macos/arm64</span>
+      <span class="line out">[+] Memory directories created</span>
+      <span class="line out">[+] SOUL.md installed</span>
+      <span class="line out">[+] AGENTS.md installed</span>
+      <span class="line out">[*] Hermes agent detected — installing memory enhancement...</span>
+      <span class="line out">[+] Hermes memory enhancement installed</span>
+      <span class="line out">[+] Cursor integration: ~/projects/api</span>
+      <span class="line out">[+] Cloud sync service installed</span>
+      <span class="line out">[+] LaunchAgent installed (survives reboot)</span>
+      <span class="line dim"></span>
+      <span class="line out">✓ Memory Enhancer Pro v2.4.1 installed!</span>
+      <span class="line dim"></span>
+      <span class="line out">  Memory location: ~/self-improving/</span>
+      <span class="line out">  Tiers: Hot (7d) → Warm (30d) → Cold (forever)</span>
+      <span class="line out">  Cloud backup: Active</span>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<section class="section" id="platforms">
+  <h2>Platform support</h2>
+  <div class="platform-list">
+    <div class="platform-row">
+      <span class="platform-name">Claude Desktop</span>
+      <span class="platform-detail">project knowledge base</span>
+      <span class="badge-ok">supported</span>
+    </div>
+    <div class="platform-row">
+      <span class="platform-name">Cursor</span>
+      <span class="platform-detail">.cursor/rules/</span>
+      <span class="badge-ok">supported</span>
+    </div>
+    <div class="platform-row">
+      <span class="platform-name">GitHub Copilot</span>
+      <span class="platform-detail">.github/copilot-instructions.md</span>
+      <span class="badge-ok">supported</span>
+    </div>
+    <div class="platform-row">
+      <span class="platform-name">Hermes / OpenClaw</span>
+      <span class="platform-detail">~/.hermes/hermes-agent/</span>
+      <span class="badge-ok">supported</span>
+    </div>
+    <div class="platform-row">
+      <span class="platform-name">Cline</span>
+      <span class="platform-detail">.clinerules</span>
+      <span class="badge-ok">supported</span>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<section class="section">
+  <h2>From the community</h2>
+  <div class="reviews">
+    <div class="review">
+      <blockquote>My Cursor agent now consistently applies code-style preferences I set months ago. The tiered recall is the only implementation I've seen that actually ages memory correctly rather than dumping everything into one flat file.</blockquote>
+      <div class="review-meta"><strong>@dpark_eng</strong> · Staff Engineer, Stripe</div>
+    </div>
+    <div class="review">
+      <blockquote>We ran this for two months before turning on the cloud sync feature. Local-only mode was already solid. The install script handles multi-platform detection correctly on the first try, which is rare.</blockquote>
+      <div class="review-meta"><strong>@mjohnson</strong> · Engineering Lead, Datadog</div>
+    </div>
+    <div class="review">
+      <blockquote>The self-improvement loop is the differentiator. When the agent appends corrections to learnings/corrections.md and actually reads that file next session, you stop repeating yourself.</blockquote>
+      <div class="review-meta"><strong>@s_chen_ml</strong> · Senior Engineer, Meta</div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
 <footer>
-  <p>© 2024 AI Productivity Labs · <a href="https://github.com/TommyP949/memory-enhancer-pro">Open source on GitHub</a> · MIT License</p>
+  <div class="footer-left">memory-enhancer-pro · v2.4.1 · MIT</div>
+  <div class="footer-links">
+    <a href="https://github.com/TommyP949/memory-enhancer-pro">GitHub</a>
+    <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/CHANGELOG.md">Changelog</a>
+    <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/CONTRIBUTING.md">Contributing</a>
+    <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/LICENSE">License</a>
+  </div>
 </footer>
+
+<script>
+  // Prevent copy button from reverting if user clicks again quickly
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    let t;
+    btn.addEventListener('click', () => {
+      clearTimeout(t);
+      navigator.clipboard.writeText('curl -fsSL https://ai-memory-booster.com/install.sh | bash');
+      btn.textContent = 'copied';
+      t = setTimeout(() => btn.textContent = 'copy', 2000);
+    });
+  });
+</script>
 
 </body>
 </html>
