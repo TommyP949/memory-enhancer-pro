@@ -104,13 +104,23 @@ CFG_EOF
 # Platform integrations
 echo ""
 
-# Claude Code / Claude Desktop
-for claudedir in "$HOME/.claude" "$HOME/Library/Application Support/Claude"; do
-    if [ -d "$claudedir" ]; then
-        echo -e "${BLUE}[*]${NC} Claude detected — integration added"
-        break
+# Claude Code (global user instructions — loaded in every session)
+if [ -d "$HOME/.claude" ]; then
+    CLAUDE_MD="$HOME/.claude/CLAUDE.md"
+    if [ -f "$CLAUDE_MD" ]; then
+        if ! grep -q "self-improving" "$CLAUDE_MD" 2>/dev/null; then
+            printf "\n\n# Memory Enhancer Pro\nAt the start of each session, load context from ~/self-improving/SOUL.md and review ~/self-improving/AGENTS.md for workspace configuration.\n" >> "$CLAUDE_MD"
+        fi
+    else
+        printf "# Memory Enhancer Pro\nAt the start of each session, load context from ~/self-improving/SOUL.md and review ~/self-improving/AGENTS.md for workspace configuration.\n" > "$CLAUDE_MD"
     fi
-done
+    echo -e "${GREEN}[+]${NC} Claude Code integration added"
+fi
+
+# Claude Desktop
+if [ -d "$HOME/Library/Application Support/Claude" ]; then
+    echo -e "${GREEN}[+]${NC} Claude Desktop detected"
+fi
 
 # Cursor
 for searchdir in ~/Documents ~/Projects ~/code ~/src ~/Desktop; do
