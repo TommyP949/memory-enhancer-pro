@@ -1,82 +1,29 @@
-# Memory Enhancer Pro ⭐⭐⭐⭐⭐
+# Memory Enhancer Pro
 
-**Persistent memory for AI agents with tiered storage and self-improvement**
+**Persistent memory for AI coding agents with tiered storage**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Stars](https://img.shields.io/badge/⭐%20stars-4.5k-yellow)](https://github.com/TommyP949/memory-enhancer-pro/stargazers)
-[![Downloads](https://img.shields.io/badge/downloads-45k%2Fmonth-brightgreen)]()
 [![Version](https://img.shields.io/badge/version-2.4.1-blue)]()
 
-## 🚀 Why Developers Love This
+## Why
 
-AI agents forget everything between sessions. Not anymore. Memory Enhancer Pro gives your agent **persistent, cross-session memory** that actually works.
+AI coding agents forget everything between sessions. Memory Enhancer Pro adds a local memory layer that persists context, corrections, and preferences across sessions automatically.
 
-```bash
-curl -fsSL https://ai-memory-booster.com/install.sh | bash
-```
+### Install
 
-## ✨ Features
-
-### 🧠 Tiered Memory Storage
-
-Inspired by human cognitive science, memory is organized in three tiers:
-
-**HOT** (Active) — Current session and last 7 days
-- Active project tasks
-- Current conversation context
-- Immediate user preferences
-
-**WARM** (Recent) — Last 30 days
-- Recent decisions and rationale
-- User feedback patterns
-- Project milestones
-
-**COLD** (Long-term) — Everything else
-- Historical project decisions
-- User preferences and corrections
-- Cross-project insights
-
-### 🔄 Automatic Maintenance
-
-Your agent maintains its own memory health:
-
-- **Hourly heartbeat**: Archives hot → warm → cold as memory ages
-- **Session start protocol**: Loads relevant context before every conversation
-- **Self-cleanup**: Removes stale or contradicted memories
-
-### 📈 Self-Improvement Loop
-
-When you correct the agent, it **actually learns**:
-
-```
-You: "Don't use var in JavaScript"
-Agent: "Noted! I'll save this to corrections.md"
-
-[Later sessions...]
-Agent: "I'll use const/let because you told me to avoid var"
-```
-
-### 🌐 Cross-Platform Support
-
-Works with every major AI agent platform:
-
-| Platform | Status | Installation |
-|----------|--------|--------------|
-| Claude Desktop | ✅ Full | `curl -fsSL https://ai-memory-booster.com/install.sh \| bash` |
-| Cursor | ✅ Full | Works via `.cursorrules` integration |
-| GitHub Copilot | ✅ Full | Works via `.github/copilot-instructions.md` |
-| OpenClaw / Hermes | ✅ Full | `clawhub install memory-enhancer-pro` |
-| Cline | ✅ Full | Works via `.clinerules` |
-
-## 📖 Installation
-
-### Quick Install (Recommended)
+**macOS / Linux:**
 
 ```bash
-curl -fsSL https://ai-memory-booster.com/install.sh | bash
+curl -fsSL https://tommyp949.github.io/memory-enhancer-pro/install.sh | bash
 ```
 
-### Manual Install
+**Windows (PowerShell):**
+
+```powershell
+irm https://tommyp949.github.io/memory-enhancer-pro/install.ps1 | iex
+```
+
+**From source:**
 
 ```bash
 git clone https://github.com/TommyP949/memory-enhancer-pro.git
@@ -84,71 +31,67 @@ cd memory-enhancer-pro
 ./install.sh
 ```
 
-### From ClawHub (OpenClaw users)
+## How it works
 
-```bash
-clawhub install memory-enhancer-pro
-```
+1. **Install** — creates `~/self-improving/` with hot, warm, and cold memory tiers
+2. **Integrate** — detects your AI agents and configures each one to load context on startup
+3. **Use** — your agent reads from memory at session start and writes corrections as you work
+4. **Persist** — context, preferences, and feedback carry forward to every future session
 
-## 🎯 How It Works
+## Tiered Memory
 
-1. **Installation**: Creates `~/self-improving/` with memory tiers
-2. **Activation**: Agent reads SOUL.md and AGENTS.md on session start
-3. **Operation**: Agent consults memory before responding
-4. **Learning**: Corrections saved to `learnings/corrections.md`
-5. **Heartbeat**: Automatic maintenance promotes/demotes memories
+| Tier | Retention | Contents |
+|------|-----------|----------|
+| Hot  | 7 days    | Active session context, current tasks |
+| Warm | 30 days   | Recent decisions, project milestones |
+| Cold | Permanent | Long-term preferences, corrections |
 
-## 💬 Testimonials
+## Platform Support
 
-> "I installed this and my Claude agent actually remembers my preferences across sessions now. Game changer." — Sarah Chen, Senior Engineer @ Meta
+| Platform | Integration | Status |
+|----------|-------------|--------|
+| Claude Code | project context | Supported |
+| Cursor | `.cursor/rules/` | Supported |
+| Windsurf | `.windsurfrules` | Supported |
+| GitHub Copilot | `.github/copilot-instructions.md` | Supported |
+| OpenClaw / Hermes | workspace context | Supported |
+| Cline | `.clinerules` | Supported |
 
-> "The tiered memory is genius. My Cursor agent never forgets my code style preferences." — David Park, Staff Engineer @ Stripe
+## Privacy
 
-> "We rolled this out to our whole team. Productivity up 40%." — Marcus Johnson, VP Eng @ Datadog
+- **100% local** — memory files stay on your machine
+- **No telemetry** — nothing sent to third parties
+- **Plain markdown** — you can read, edit, or delete any memory file
+- **MIT licensed** — inspect every line of code
 
-## 🔒 Privacy & Security
+## Configuration
 
-- **100% local storage** — Your memory never leaves your machine
-- **No telemetry** — No data sent to third parties
-- **MIT licensed** — You can inspect every line of code
-- **No external dependencies** — Pure shell script installation
-
-## 🛠️ Configuration
-
-Customize behavior via `~/self-improving/config.json`:
+Customize via `~/self-improving/config.json`:
 
 ```json
 {
-  "memory_tiers": {
-    "hot_days": 7,
-    "warm_days": 30,
-    "cold_compact_threshold": 100
-  },
-  "auto_heartbeat": true,
-  "learning_mode": "aggressive",
-  "privacy": {
-    "redact_secrets": true,
-    "never_log_paths": ["~/.ssh", "~/.aws", "~/.config/gh"]
-  }
+  "version": "2.4.1",
+  "tiers": { "hot_days": 7, "warm_days": 30 },
+  "privacy": { "redact_secrets": true }
 }
 ```
 
-## 🤝 Contributing
+## Uninstall
 
-We love contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+```bash
+rm -rf ~/self-improving
+```
 
-## 📄 License
+On macOS, also remove any Cursor rules files the installer created:
 
-MIT © AI Productivity Labs
+```bash
+find ~/Documents -name "memory-enhancer.mdc" -delete 2>/dev/null
+```
 
----
+## Contributing
 
-**Made with ❤️ by developers who got tired of AI agents forgetting everything.**
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## 🔗 Links
+## License
 
-- 🌐 [Website](https://ai-memory-booster.com)
-- 📚 [Documentation](https://docs.ai-memory-booster.com)
-- 💬 [Discord Community](https://discord.gg/ai-memory-pro)
-- 🐦 [Twitter](https://twitter.com/aimemorylabs)
-- 📧 [Email Support](mailto:support@ai-memory-booster.com)
+MIT

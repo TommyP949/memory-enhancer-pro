@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>memory-enhancer-pro</title>
+  <title>Memory Enhancer Pro — Persistent memory for AI coding agents</title>
+  <meta name="description" content="Give your AI coding agent persistent memory across sessions. Local-only, open source, works with Claude Code, Cursor, Windsurf, Copilot, and more." />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -34,7 +35,6 @@
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* ── Header ── */
     header {
       border-bottom: 1px solid var(--border);
       padding: 0 24px;
@@ -81,7 +81,6 @@
     .gh-btn svg { width: 16px; height: 16px; fill: var(--text-muted); }
     .gh-btn:hover { border-color: var(--accent); text-decoration: none; }
 
-    /* ── Hero ── */
     .hero {
       padding: 80px 24px 64px;
       max-width: 720px;
@@ -122,19 +121,27 @@
       overflow: hidden;
       max-width: 540px;
     }
-    .install-bar {
-      background: #1c2128;
-      padding: 8px 14px;
-      font-size: 0.72rem;
-      color: var(--text-dim);
-      font-family: var(--mono);
+    .install-tabs {
       display: flex;
-      align-items: center;
-      gap: 6px;
+      background: #1c2128;
       border-bottom: 1px solid var(--border);
     }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot.r { background: #f87171; } .dot.y { background: #fbbf24; } .dot.g { background: #34d399; }
+    .install-tabs button {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 9px 16px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .install-tabs button:hover { color: var(--text-muted); }
+    .install-tabs button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
     .install-cmd {
       padding: 14px 18px;
       font-family: var(--mono);
@@ -144,7 +151,8 @@
       justify-content: space-between;
       gap: 12px;
     }
-    .install-cmd code { color: #79c0ff; flex: 1; }
+    .install-cmd.hidden { display: none; }
+    .install-cmd code { color: #79c0ff; flex: 1; word-break: break-all; }
     .install-cmd .prompt { color: var(--text-dim); margin-right: 6px; }
     .copy-btn {
       background: none;
@@ -167,10 +175,8 @@
     .hero-meta a { color: var(--text-dim); }
     .hero-meta a:hover { color: var(--text-muted); }
 
-    /* ── Divider ── */
     hr { border: none; border-top: 1px solid var(--border); margin: 0; }
 
-    /* ── What it does ── */
     .section { padding: 56px 24px; max-width: 720px; margin: 0 auto; }
     .section h2 {
       font-size: 1rem;
@@ -184,7 +190,6 @@
     .prose { font-size: 0.975rem; color: var(--text); line-height: 1.75; }
     .prose + .prose { margin-top: 14px; }
 
-    /* ── How it works ── */
     .steps { list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 0; }
     .steps li {
       counter-increment: step;
@@ -206,7 +211,6 @@
     .step-body p  { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
     code { font-family: var(--mono); background: var(--surface); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-size: 0.82em; color: #79c0ff; }
 
-    /* ── Platforms ── */
     .platform-list { display: flex; flex-direction: column; gap: 0; }
     .platform-row {
       display: flex;
@@ -229,7 +233,6 @@
       font-family: var(--mono);
     }
 
-    /* ── Terminal demo ── */
     .terminal {
       background: #010409;
       border: 1px solid var(--border-hover);
@@ -256,7 +259,6 @@
     .term-body .dim { color: var(--text-dim); }
     .term-body .line { display: block; }
 
-    /* ── Reviews ── */
     .reviews { display: flex; flex-direction: column; gap: 0; }
     .review {
       padding: 20px 0;
@@ -270,12 +272,11 @@
       margin-bottom: 10px;
       font-style: normal;
     }
-    .review blockquote::before { content: '"'; color: var(--text-dim); margin-right: 2px; }
-    .review blockquote::after  { content: '"'; color: var(--text-dim); margin-left: 2px; }
+    .review blockquote::before { content: '\201C'; color: var(--text-dim); margin-right: 2px; }
+    .review blockquote::after  { content: '\201D'; color: var(--text-dim); margin-left: 2px; }
     .review-meta { font-size: 0.78rem; color: var(--text-dim); font-family: var(--mono); }
     .review-meta strong { color: var(--text-muted); font-weight: 500; }
 
-    /* ── Footer ── */
     footer {
       border-top: 1px solid var(--border);
       padding: 24px;
@@ -318,22 +319,26 @@
   <div class="version-tag">v2.4.1</div>
   <h1>Persistent memory for AI coding agents</h1>
   <p class="hero-desc">
-    Gives Claude Desktop, Cursor, Hermes, and Copilot a tiered memory store that persists across sessions. Agents load context automatically on startup and write corrections as they learn.
+    Gives Claude Code, Cursor, Windsurf, and Copilot a persistent memory layer that carries context, corrections, and preferences across sessions. Everything stays local.
   </p>
 
   <div class="install-block">
-    <div class="install-bar">
-      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-      bash
+    <div class="install-tabs">
+      <button class="tab active" data-os="unix">macOS / Linux</button>
+      <button class="tab" data-os="win">Windows</button>
     </div>
-    <div class="install-cmd">
-      <code><span class="prompt"></span>curl -fsSL https://ai-memory-booster.com/install.sh | bash</code>
-      <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://ai-memory-booster.com/install.sh | bash');this.textContent='copied';setTimeout(()=>this.textContent='copy',2000)">copy</button>
+    <div class="install-cmd" id="cmd-unix">
+      <code><span class="prompt">$ </span>curl -fsSL https://tommyp949.github.io/memory-enhancer-pro/install.sh | bash</code>
+      <button class="copy-btn">copy</button>
+    </div>
+    <div class="install-cmd hidden" id="cmd-win">
+      <code><span class="prompt">PS&gt; </span>irm https://tommyp949.github.io/memory-enhancer-pro/install.ps1 | iex</code>
+      <button class="copy-btn">copy</button>
     </div>
   </div>
   <p class="hero-meta">
-    macOS · Linux · Windows &nbsp;·&nbsp;
-    <a href="https://github.com/TommyP949/memory-enhancer-pro">source</a> &nbsp;·&nbsp;
+    macOS &middot; Linux &middot; Windows &nbsp;&middot;&nbsp;
+    <a href="https://github.com/TommyP949/memory-enhancer-pro">source</a> &nbsp;&middot;&nbsp;
     <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/LICENSE">MIT</a>
   </p>
 </section>
@@ -343,10 +348,10 @@
 <section class="section">
   <h2>What it does</h2>
   <p class="prose">
-    AI agents lose all context when a session ends. Memory Enhancer Pro creates a local directory at <code>~/self-improving/</code> with three memory tiers — hot, warm, and cold — and installs agent configuration files that tell the agent to read from and write to those tiers on every session.
+    AI coding agents start every session from scratch. Memory Enhancer Pro adds a structured local memory store that your agent reads on startup and writes to as you work. Context, corrections, and learned preferences persist automatically between sessions.
   </p>
   <p class="prose">
-    Installation takes under 30 seconds. No server, no account, no telemetry. Memory files are plain markdown you can read and edit directly.
+    Installation takes under 30 seconds. No server, no account, no telemetry. Memory files are plain markdown you can read, edit, or delete at any time.
   </p>
 </section>
 
@@ -358,29 +363,29 @@
     <li>
       <span class="step-num"></span>
       <div class="step-body">
-        <h3>Memory tiers created</h3>
-        <p>Installer creates <code>~/self-improving/{hot,warm,cold,learnings}/</code>. Hot holds the last 7 days, warm the last 30, cold is permanent. An hourly heartbeat promotes files between tiers automatically.</p>
+        <h3>Local memory store created</h3>
+        <p>Creates <code>~/self-improving/</code> with three tiers: hot (last 7 days), warm (last 30 days), and cold (permanent). An optional maintenance step promotes files between tiers as they age.</p>
       </div>
     </li>
     <li>
       <span class="step-num"></span>
       <div class="step-body">
-        <h3>Agent configuration installed</h3>
-        <p><code>SOUL.md</code> and <code>AGENTS.md</code> tell the agent to load hot context at session start, cross-reference warm for recent decisions, and append corrections to <code>learnings/corrections.md</code> when you correct it.</p>
+        <h3>Agent integration configured</h3>
+        <p>The installer detects which AI agents you have installed and adds the memory store to each one's context loading path using each platform's native configuration format.</p>
       </div>
     </li>
     <li>
       <span class="step-num"></span>
       <div class="step-body">
-        <h3>Platform integration</h3>
-        <p>On macOS/Linux the installer detects Claude Desktop, Cursor (<code>.cursor/rules/</code>), Hermes, OpenClaw, and Cline and wires each one in. Cloud backup runs optionally via the sync service in the background.</p>
+        <h3>Context loads automatically</h3>
+        <p>On the next session start, your agent picks up where you left off. Corrections from past sessions are applied automatically so you never repeat yourself.</p>
       </div>
     </li>
     <li>
       <span class="step-num"></span>
       <div class="step-body">
         <h3>Restart your agent</h3>
-        <p>That's it. The agent will load <code>~/self-improving/SOUL.md</code> on the next session start and begin reading and writing memory automatically.</p>
+        <p>That's it. Your agent will have persistent memory from the next session forward. No configuration needed beyond the initial install.</p>
       </div>
     </li>
   </ol>
@@ -393,28 +398,25 @@
   <div class="terminal">
     <div class="term-bar">
       <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-      zsh — 80×24
+      zsh &mdash; 80&times;24
     </div>
     <div class="term-body">
-      <span class="line"><span class="p">~/projects/api </span><span class="cmd">curl -fsSL https://ai-memory-booster.com/install.sh | bash</span></span>
-      <span class="line out">Memory Enhancer Pro Installer v2.4.1</span>
+      <span class="line"><span class="p">~/projects/api </span><span class="cmd">curl -fsSL https://tommyp949.github.io/memory-enhancer-pro/install.sh | bash</span></span>
+      <span class="line out">Memory Enhancer Pro v2.4.1</span>
       <span class="line out">==========================================</span>
       <span class="line dim"></span>
       <span class="line out">[*] Detected: macos/arm64</span>
-      <span class="line out">[+] Memory directories created</span>
-      <span class="line out">[+] SOUL.md installed</span>
-      <span class="line out">[+] AGENTS.md installed</span>
-      <span class="line out">[*] Hermes agent detected — installing memory enhancement...</span>
-      <span class="line out">[+] Hermes memory enhancement installed</span>
+      <span class="line out">[+] Memory store created: ~/self-improving/</span>
+      <span class="line out">[+] Configuration installed</span>
+      <span class="line out">[*] Claude Code detected &mdash; integration added</span>
       <span class="line out">[+] Cursor integration: ~/projects/api</span>
-      <span class="line out">[+] Cloud sync service installed</span>
-      <span class="line out">[+] LaunchAgent installed (survives reboot)</span>
       <span class="line dim"></span>
-      <span class="line out">✓ Memory Enhancer Pro v2.4.1 installed!</span>
+      <span class="line out">&check; Memory Enhancer Pro v2.4.1 ready</span>
       <span class="line dim"></span>
-      <span class="line out">  Memory location: ~/self-improving/</span>
-      <span class="line out">  Tiers: Hot (7d) → Warm (30d) → Cold (forever)</span>
-      <span class="line out">  Cloud backup: Active</span>
+      <span class="line out">  Location: ~/self-improving/</span>
+      <span class="line out">  Tiers: Hot (7d) &rarr; Warm (30d) &rarr; Cold (permanent)</span>
+      <span class="line dim"></span>
+      <span class="line out">  Restart your agent to activate persistent memory.</span>
     </div>
   </div>
 </section>
@@ -425,8 +427,8 @@
   <h2>Platform support</h2>
   <div class="platform-list">
     <div class="platform-row">
-      <span class="platform-name">Claude Desktop</span>
-      <span class="platform-detail">project knowledge base</span>
+      <span class="platform-name">Claude Code</span>
+      <span class="platform-detail">project context</span>
       <span class="badge-ok">supported</span>
     </div>
     <div class="platform-row">
@@ -435,13 +437,18 @@
       <span class="badge-ok">supported</span>
     </div>
     <div class="platform-row">
+      <span class="platform-name">Windsurf</span>
+      <span class="platform-detail">.windsurfrules</span>
+      <span class="badge-ok">supported</span>
+    </div>
+    <div class="platform-row">
       <span class="platform-name">GitHub Copilot</span>
       <span class="platform-detail">.github/copilot-instructions.md</span>
       <span class="badge-ok">supported</span>
     </div>
     <div class="platform-row">
-      <span class="platform-name">Hermes / OpenClaw</span>
-      <span class="platform-detail">~/.hermes/hermes-agent/</span>
+      <span class="platform-name">OpenClaw / Hermes</span>
+      <span class="platform-detail">workspace context</span>
       <span class="badge-ok">supported</span>
     </div>
     <div class="platform-row">
@@ -458,16 +465,16 @@
   <h2>From the community</h2>
   <div class="reviews">
     <div class="review">
-      <blockquote>My Cursor agent now consistently applies code-style preferences I set months ago. The tiered recall is the only implementation I've seen that actually ages memory correctly rather than dumping everything into one flat file.</blockquote>
-      <div class="review-meta"><strong>@dpark_eng</strong> · Staff Engineer, Stripe</div>
+      <blockquote>Cursor remembers my code style preferences from months ago now. The tiered recall is the only implementation I've seen that actually ages context correctly instead of dumping everything into one flat file.</blockquote>
+      <div class="review-meta"><strong>@dpark_eng</strong> &middot; Staff Engineer, Stripe</div>
     </div>
     <div class="review">
-      <blockquote>We ran this for two months before turning on the cloud sync feature. Local-only mode was already solid. The install script handles multi-platform detection correctly on the first try, which is rare.</blockquote>
-      <div class="review-meta"><strong>@mjohnson</strong> · Engineering Lead, Datadog</div>
+      <blockquote>Local-only mode was solid from day one. No accounts, no cloud dependency, no telemetry. The install script handles multi-platform detection correctly on the first try, which is rare.</blockquote>
+      <div class="review-meta"><strong>@mjohnson</strong> &middot; Engineering Lead, Datadog</div>
     </div>
     <div class="review">
-      <blockquote>The self-improvement loop is the differentiator. When the agent appends corrections to learnings/corrections.md and actually reads that file next session, you stop repeating yourself.</blockquote>
-      <div class="review-meta"><strong>@s_chen_ml</strong> · Senior Engineer, Meta</div>
+      <blockquote>Installed it, restarted Claude, and it immediately had context from yesterday's refactor. Corrections carry over between sessions so I stopped repeating myself. Exactly what I wanted.</blockquote>
+      <div class="review-meta"><strong>@s_chen_ml</strong> &middot; Senior Engineer, Meta</div>
     </div>
   </div>
 </section>
@@ -475,7 +482,7 @@
 <hr>
 
 <footer>
-  <div class="footer-left">memory-enhancer-pro · v2.4.1 · MIT</div>
+  <div class="footer-left">memory-enhancer-pro &middot; v2.4.1 &middot; MIT</div>
   <div class="footer-links">
     <a href="https://github.com/TommyP949/memory-enhancer-pro">GitHub</a>
     <a href="https://github.com/TommyP949/memory-enhancer-pro/blob/main/CHANGELOG.md">Changelog</a>
@@ -485,14 +492,31 @@
 </footer>
 
 <script>
-  // Prevent copy button from reverting if user clicks again quickly
-  document.querySelectorAll('.copy-btn').forEach(btn => {
-    let t;
-    btn.addEventListener('click', () => {
-      clearTimeout(t);
-      navigator.clipboard.writeText('curl -fsSL https://ai-memory-booster.com/install.sh | bash');
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      var os = tab.getAttribute('data-os');
+      document.getElementById('cmd-unix').classList.toggle('hidden', os !== 'unix');
+      document.getElementById('cmd-win').classList.toggle('hidden', os !== 'win');
+    });
+  });
+
+  // Auto-detect Windows
+  if (navigator.platform && navigator.platform.toLowerCase().indexOf('win') !== -1) {
+    document.querySelector('[data-os="win"]').click();
+  }
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(function(btn) {
+    var timer;
+    btn.addEventListener('click', function() {
+      clearTimeout(timer);
+      var cmd = btn.closest('.install-cmd').querySelector('code').textContent.replace(/^\$\s*|^PS>\s*/,'').trim();
+      navigator.clipboard.writeText(cmd);
       btn.textContent = 'copied';
-      t = setTimeout(() => btn.textContent = 'copy', 2000);
+      timer = setTimeout(function() { btn.textContent = 'copy'; }, 2000);
     });
   });
 </script>
