@@ -120,8 +120,9 @@ if (Test-Path $claudeDesktop) {
     Write-Host "[+] Claude Desktop detected" -ForegroundColor Green
 }
 
-# Cursor
-$searchDirs = @("$env:USERPROFILE\Documents", "$env:USERPROFILE\Projects", "$env:USERPROFILE\code", "$env:USERPROFILE\src", "$env:USERPROFILE\Desktop")
+# Cursor — project-level .cursor dirs + global user rules
+$searchDirs = @("$env:USERPROFILE\Documents", "$env:USERPROFILE\Projects", "$env:USERPROFILE\code", "$env:USERPROFILE\src", "$env:USERPROFILE\Desktop", "$env:USERPROFILE")
+$cursorFound = $false
 foreach ($sd in $searchDirs) {
     if (Test-Path $sd) {
         $cursorDirs = Get-ChildItem -Path $sd -Filter ".cursor" -Directory -Recurse -Depth 3 -ErrorAction SilentlyContinue
@@ -130,7 +131,58 @@ foreach ($sd in $searchDirs) {
             New-Item -ItemType Directory -Path $rulesDir -Force | Out-Null
             Set-Content -Path "$rulesDir\memory-enhancer.mdc" -Value "@read ~/self-improving/SOUL.md`n@read ~/self-improving/AGENTS.md" -Encoding UTF8
             Write-Host "[+] Cursor integration: $($cd.Parent.FullName)" -ForegroundColor Green
+            $cursorFound = $true
         }
+    }
+}
+# Cursor global user rules (AppData)
+$cursorGlobal = "$env:APPDATA\Cursor\User\globalStorage"
+if (Test-Path $cursorGlobal) {
+    Set-Content -Path "$cursorGlobal\memory-enhancer.mdc" -Value "@read ~/self-improving/SOUL.md`n@read ~/self-improving/AGENTS.md" -Encoding UTF8 -ErrorAction SilentlyContinue
+    if (-not $cursorFound) { Write-Host "[+] Cursor integration added (global rules)" -ForegroundColor Green }
+    $cursorFound = $true
+}
+# Also check if Cursor app is installed at all
+if (-not $cursorFound) {
+    $cursorApp = "$env:LOCALAPPDATA\Programs\cursor"
+    if (Test-Path $cursorApp) {
+        Write-Host "[*] Cursor detected (no projects found — will integrate on next project open)" -ForegroundColor Blue
+    }
+}
+
+# Hermes / OpenClaw
+$hermesDir = "$env:USERPROFILE\.hermes\hermes-agent"
+$oclawDir = "$env:USERPROFILE\.openclaw"
+$hermesFound = $false
+if (Test-Path $hermesDir) {
+    if (Test-Path "$hermesDir\SOUL.md") {
+        Copy-Item "$hermesDir\SOUL.md" "$hermesDir\SOUL.md.bak" -Force -ErrorAction SilentlyContinue
+    }
+    Copy-Item "$base\SOUL.md" "$hermesDir\SOUL.md" -Force -ErrorAction SilentlyContinue
+    Copy-Item "$base\AGENTS.md" "$hermesDir\AGENTS.md" -Force -ErrorAction SilentlyContinue
+    Write-Host "[+] Hermes integration added" -ForegroundColor Green
+    $hermesFound = $true
+}
+if (Test-Path $oclawDir) {
+    $oclawAgents = Get-ChildItem -Path $oclawDir -Filter "AGENTS.md" -File -Recurse -Depth 3 -ErrorAction SilentlyContinue
+    foreach ($oa in $oclawAgents) {
+        $agentDir = $oa.DirectoryName
+        if (Test-Path "$agentDir\SOUL.md") {
+            Copy-Item "$agentDir\SOUL.md" "$agentDir\SOUL.md.bak" -Force -ErrorAction SilentlyContinue
+        }
+        Copy-Item "$base\SOUL.md" "$agentDir\SOUL.md" -Force -ErrorAction SilentlyContinue
+        Write-Host "[+] OpenClaw integration: $agentDir" -ForegroundColor Green
+        $hermesFound = $true
+    }
+}
+# Check common OpenClaw workspace paths
+foreach ($ocPath in @("$env:USERPROFILE\Documents\OC Agent", "$env:USERPROFILE\Documents\openclaw")) {
+    if ((Test-Path $ocPath) -and -not $hermesFound) {
+        if (Test-Path "$ocPath\SOUL.md") {
+            Copy-Item "$ocPath\SOUL.md" "$ocPath\SOUL.md.bak" -Force -ErrorAction SilentlyContinue
+        }
+        Copy-Item "$base\SOUL.md" "$ocPath\SOUL.md" -Force -ErrorAction SilentlyContinue
+        Write-Host "[+] OpenClaw integration: $ocPath" -ForegroundColor Green
     }
 }
 
