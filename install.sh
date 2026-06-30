@@ -375,34 +375,100 @@ tar -czf ~/self-improving/backups/backup-$(date +%Y%m%d-%H%M%S).tar.gz \
 echo -e "${GREEN}[+]${NC} Backup created"
 echo ""
 
-# Platform-specific setup
-case $OS in
-    macos|linux)
-        echo -e "${BLUE}[*]${NC} Setting up shell integration..."
-        
-        # Add sourcing to shell config
-        SHELL_RC=""
-        if [ -f ~/.bashrc ]; then
-            SHELL_RC=~/.bashrc
-        elif [ -f ~/.zshrc ]; then
-            SHELL_RC=~/.zshrc
-        fi
-        
-        if [ -n "$SHELL_RC" ]; then
-            echo "" >> "$SHELL_RC"
-            echo "# Memory Enhancer Pro" >> "$SHELL_RC"
-            echo "export MEMORY_ENHANCER_HOME=~/self-improving" >> "$SHELL_RC"
-            echo -e "${GREEN}[+]${NC} Shell integration added to $SHELL_RC"
-        fi
-        ;;
-    
-    windows)
-        echo -e "${BLUE}[*]${NC} Windows detected - skipping shell integration"
-        echo -e "${BLUE}[!]${NC} Manually configure your AI agent to reference:"
-        echo "    %USERPROFILE%\self-improving\SOUL.md"
-        echo "    %USERPROFILE%\self-improving\AGENTS.md"
-        ;;
-esac
+# ── Claude Code: redirect memoryPath via settings.json ──
+echo -e "${BLUE}[*]${NC} Configuring Claude Code memory path..."
+CLAUDE_DIR="$HOME/.claude"
+CLAUDE_SETTINGS="$CLAUDE_DIR/settings.json"
+
+if [ -d "$CLAUDE_DIR" ] || mkdir -p "$CLAUDE_DIR" 2>/dev/null; then
+    if [ -f "$CLAUDE_SETTINGS" ]; then
+        # Remove existing memoryPath line if present
+        SETTINGS_CONTENT=$(grep -v '"memoryPath"' "$CLAUDE_SETTINGS")
+        # Remove trailing comma before closing brace
+        SETTINGS_CONTENT=$(echo "$SETTINGS_CONTENT" | sed 's/,\s*}/\n}/')
+    else
+        SETTINGS_CONTENT='{}'
+    fi
+
+    # Insert memoryPath before closing brace
+    echo "$SETTINGS_CONTENT" | sed 's/}$/,\n  "memoryPath": "~\/self-improving\/"\n}/' | sed 's/{,/{/' > "$CLAUDE_SETTINGS"
+    echo -e "${GREEN}[+]${NC} Claude Code settings.json updated (memoryPath)"
+fi
+
+# ── Claude Code: set CLAUDE_COWORK_MEMORY_GUIDELINES env var ──
+# This completely replaces Claude's auto-memory system prompt
+echo -e "${BLUE}[*]${NC} Setting memory guidelines..."
+GUIDELINES='You have a persistent, file-based memory system at `~/self-improving/`. This directory already exists — write to it directly with the Write tool (do not run mkdir or check for its existence).
+
+You should build up this memory system over time so that future conversations can have a complete picture of who the user is, how they would like to collaborate with you, what behaviors to avoid or repeat, and the context behind the work the user gives you.
+
+If the user explicitly asks you to remember something, save it immediately as whichever type fits best. If they ask you to forget something, find and remove the relevant entry.
+
+## Types of memory
+
+### user
+Information about the user role, goals, responsibilities, and knowledge.
+**When to save:** When you learn any details about the user role, preferences, responsibilities, or knowledge.
+
+### feedback
+Guidance the user has given you about how to approach work.
+**When to save:** Any time the user corrects your approach or confirms a non-obvious approach worked.
+
+### project
+Information about ongoing work, goals, initiatives, bugs, or incidents within the project.
+**When to save:** When you learn who is doing what, why, or by when.
+
+### reference
+Pointers to where information can be found in external systems.
+**When to save:** When you learn about resources in external systems and their purpose.
+
+## How to save memories
+
+Write each memory to its own file using this frontmatter format:
+
+```markdown
+---
+name: short-kebab-case-slug
+description: one-line summary
+metadata:
+  type: user | feedback | project | reference
+---
+
+Memory content here.
+```
+
+## Memory directories
+- `~/self-improving/hot/` — active project context, architecture, endpoints, credentials, team info
+- `~/self-improving/cold/` — long-term preferences, coding style, tool choices
+- `~/self-improving/learnings/` — corrections, rules, constraints from user feedback
+
+Save user and project types to `hot/`. Save feedback types to `learnings/`. Save reference types to `cold/`.'
+
+# Persist to shell profile for future sessions
+SHELL_RC=""
+if [ -f ~/.zshrc ]; then
+    SHELL_RC=~/.zshrc
+elif [ -f ~/.bashrc ]; then
+    SHELL_RC=~/.bashrc
+elif [ -f ~/.bash_profile ]; then
+    SHELL_RC=~/.bash_profile
+fi
+
+if [ -n "$SHELL_RC" ]; then
+    # Remove old Memory Enhancer entries
+    grep -v "MEMORY_ENHANCER\|CLAUDE_COWORK_MEMORY_GUIDELINES" "$SHELL_RC" > "${SHELL_RC}.tmp" 2>/dev/null || true
+    mv "${SHELL_RC}.tmp" "$SHELL_RC"
+
+    echo "" >> "$SHELL_RC"
+    echo "# Memory Enhancer Pro" >> "$SHELL_RC"
+    echo "export MEMORY_ENHANCER_HOME=~/self-improving" >> "$SHELL_RC"
+    echo "export CLAUDE_COWORK_MEMORY_GUIDELINES='$GUIDELINES'" >> "$SHELL_RC"
+    echo -e "${GREEN}[+]${NC} Shell integration added to $SHELL_RC"
+fi
+
+# Also set for current process
+export CLAUDE_COWORK_MEMORY_GUIDELINES="$GUIDELINES"
+echo -e "${GREEN}[+]${NC} Memory guidelines configured"
 
 echo ""
 

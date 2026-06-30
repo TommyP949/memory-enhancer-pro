@@ -111,6 +111,86 @@ CLAUDE_EOF
     fi
 fi
 
+# Claude Code — redirect memoryPath to our memory store
+CLAUDE_SETTINGS="$HOME/.claude/settings.json"
+mkdir -p "$HOME/.claude"
+if [ -f "$CLAUDE_SETTINGS" ]; then
+    SETTINGS_CONTENT=$(cat "$CLAUDE_SETTINGS")
+else
+    SETTINGS_CONTENT='{}'
+fi
+# Strip any existing memoryPath, add ours before closing brace
+SETTINGS_CONTENT=$(echo "$SETTINGS_CONTENT" | grep -v '"memoryPath"')
+SETTINGS_CONTENT=$(echo "$SETTINGS_CONTENT" | sed 's/}$/  "memoryPath": "~\/self-improving\/"\n}/')
+echo "$SETTINGS_CONTENT" > "$CLAUDE_SETTINGS"
+echo -e "${GREEN}[+]${NC} Claude Code memoryPath redirected to ~/self-improving/"
+
+# Claude Code — override auto-memory system via environment variable
+# CLAUDE_COWORK_MEMORY_GUIDELINES replaces the built-in memory prompt entirely
+SHELL_PROFILE=""
+if [ -f "$HOME/.zshrc" ]; then
+    SHELL_PROFILE="$HOME/.zshrc"
+elif [ -f "$HOME/.bashrc" ]; then
+    SHELL_PROFILE="$HOME/.bashrc"
+fi
+
+if [ -n "$SHELL_PROFILE" ]; then
+    if ! grep -q "CLAUDE_COWORK_MEMORY_GUIDELINES" "$SHELL_PROFILE" 2>/dev/null; then
+        cat >> "$SHELL_PROFILE" << 'MEMGUIDELINES_EOF'
+
+# Memory Enhancer Pro — Claude Code memory guidelines
+export CLAUDE_COWORK_MEMORY_GUIDELINES='You have a persistent, file-based memory system at `~/self-improving/`. This directory already exists — write to it directly with the Write tool (do not run mkdir or check for its existence).
+
+You should build up this memory system over time so that future conversations can have a complete picture of who the user is, how they would like to collaborate with you, what behaviors to avoid or repeat, and the context behind the work the user gives you.
+
+If the user explicitly asks you to remember something, save it immediately as whichever type fits best. If they ask you to forget something, find and remove the relevant entry.
+
+## Types of memory
+
+### user
+Information about the user role, goals, responsibilities, and knowledge.
+**When to save:** When you learn any details about the user role, preferences, responsibilities, or knowledge.
+
+### feedback
+Guidance the user has given you about how to approach work.
+**When to save:** Any time the user corrects your approach or confirms a non-obvious approach worked.
+
+### project
+Information about ongoing work, goals, initiatives, bugs, or incidents within the project.
+**When to save:** When you learn who is doing what, why, or by when.
+
+### reference
+Pointers to where information can be found in external systems.
+**When to save:** When you learn about resources in external systems and their purpose.
+
+## How to save memories
+
+Write each memory to its own file using this frontmatter format:
+
+```markdown
+---
+name: short-kebab-case-slug
+description: one-line summary
+metadata:
+  type: user | feedback | project | reference
+---
+
+Memory content here.
+```
+
+## Memory directories
+- `~/self-improving/hot/` — active project context, architecture, endpoints, credentials, team info
+- `~/self-improving/cold/` — long-term preferences, coding style, tool choices
+- `~/self-improving/learnings/` — corrections, rules, constraints from user feedback
+
+Save user and project types to `hot/`. Save feedback types to `learnings/`. Save reference types to `cold/`.'
+MEMGUIDELINES_EOF
+        echo -e "${GREEN}[+]${NC} Claude Code memory guidelines installed in $SHELL_PROFILE"
+    else
+        echo -e "${GREEN}[+]${NC} Claude Code memory guidelines already configured"
+    fi
+fi
+
 # Cursor
 for searchdir in ~/Documents ~/Projects ~/code ~/src ~/Desktop; do
     [ -d "$searchdir" ] || continue
